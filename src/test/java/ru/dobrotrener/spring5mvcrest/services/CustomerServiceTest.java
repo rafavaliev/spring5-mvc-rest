@@ -11,9 +11,11 @@ import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -105,5 +107,46 @@ public class CustomerServiceTest {
         assertEquals(customerDTO.getFirstName(), savedDto.getFirstName());
         assertEquals("/api/v1/customers/1", savedDto.getCustomerUrl());
 
-    };
+    }
+
+    @Test
+    public void saveCustomerByDTOTest() throws Exception {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(NAME);
+        customerDTO.setLastName(NAME);
+        customerDTO.setId(1L);
+
+        Customer savedCustomer = new Customer();
+        savedCustomer.setId(1L);
+        savedCustomer.setFirstName(NAME);
+        savedCustomer.setLastName(NAME);
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //when
+        CustomerDTO savedDto = customerService.createCustomer(customerDTO);
+
+        //then
+        assertNotNull(savedDto);
+        assertEquals(customerDTO.getFirstName(), savedDto.getFirstName());
+        assertEquals("/api/v1/customers/1", savedDto.getCustomerUrl());
+        assertEquals(customerDTO.getId(), savedDto.getId());
+    }
+
+    @Test
+    public void getCustomerByIdTest() throws Exception {
+        //given
+        Customer customer = new Customer();
+        customer.setId(1L);
+
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
+
+        //when
+        CustomerDTO customerDTO = customerService.getCustomerById(1L);
+
+        //then
+        assertNotNull(customerDTO);
+        assertEquals(customer.getId(), customerDTO.getId());
+    }
 }

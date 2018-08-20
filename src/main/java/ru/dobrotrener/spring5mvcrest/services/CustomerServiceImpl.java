@@ -7,6 +7,7 @@ import ru.dobrotrener.spring5mvcrest.domain.Customer;
 import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,13 +52,29 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
-        Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+        return saveAndReturnDTO(customerMapper.customerDtoToCustomer(customerDTO));
+    }
 
+    @Override
+    public CustomerDTO saveCustomerByDTO(Long id, CustomerDTO customerDTO) {
+        Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+        customer.setId(id);
+
+        return saveAndReturnDTO(customer);
+    }
+
+    private CustomerDTO saveAndReturnDTO(Customer customer) {
         Customer savedCustomer = customerRepository.save(customer);
 
         CustomerDTO returnDto = customerMapper.customerToCustomerDto(savedCustomer);
-        returnDto.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
-
+        returnDto.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId().toString());
         return returnDto;
+    }
+
+    @Override
+    public CustomerDTO getCustomerById(Long id) {
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+        Customer customer = customerOptional.orElseGet(Customer::new);
+        return customerMapper.customerToCustomerDto(customer);
     }
 }
