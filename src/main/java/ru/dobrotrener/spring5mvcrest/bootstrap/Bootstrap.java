@@ -4,7 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import ru.dobrotrener.spring5mvcrest.domain.Category;
+import ru.dobrotrener.spring5mvcrest.domain.Customer;
 import ru.dobrotrener.spring5mvcrest.repositories.CategoryRepository;
+import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
+
+import java.util.Arrays;
 
 
 @Slf4j
@@ -13,8 +17,12 @@ public class Bootstrap implements CommandLineRunner {
 
     private CategoryRepository categoryRepository;
 
-    public Bootstrap(CategoryRepository categoryRepository) {
+    private CustomerRepository customerRepository;
+
+    public Bootstrap(CategoryRepository categoryRepository,
+                     CustomerRepository customerRepository) {
         this.categoryRepository = categoryRepository;
+        this.customerRepository = customerRepository;
     }
 
     /**
@@ -24,10 +32,32 @@ public class Bootstrap implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-        createFriuts();
+        createCategories();
+        createCustomers();
     }
 
-    private void createFriuts() {
+    private void createCustomers() {
+        Customer customer1 = new Customer(1L, "Michael",  "Lachappele");
+        Customer customer2 = new Customer(2L, "David",  "Winter");
+        Customer customer3 = new Customer(3L, "Anne",  "Hine");
+        Customer customer4 = new Customer(4L, "Alice",  "Eastman");
+        Customer customer5 = new Customer(5L, "Freddy",  "Meyers");
+        Customer customer6 = new Customer(6L, "Albert",  "Einstein");
+        Customer customer7 = new Customer(7L, "Joe",  "Buck");
+        customerRepository.saveAll(Arrays.asList(
+                customer1,
+                customer2,
+                customer3,
+                customer4,
+                customer5,
+                customer6,
+                customer7
+        ));
+        log.info("Customers loaded on bootstrap: " + customerRepository.count());
+    }
+
+
+    private void createCategories() {
         Category fruits = new Category();
         fruits.setName("Fruits");
         categoryRepository.save(fruits);
