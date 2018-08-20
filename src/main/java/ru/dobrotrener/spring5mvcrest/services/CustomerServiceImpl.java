@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO getCustomerByFirstName(String name) {
-        Customer customer = customerRepository.findByFirstname(name);
+        Customer customer = customerRepository.findByFirstName(name);
         if (customer == null) {
             customer = new Customer();
         }
@@ -42,10 +42,22 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO getCustomerByLastName(String name) {
-        Customer customer = customerRepository.findByLastname(name);
+        Customer customer = customerRepository.findByLastName(name);
         if (customer == null) {
             customer = new Customer();
         }
         return customerMapper.customerToCustomerDto(customer);
+    }
+
+    @Override
+    public CustomerDTO createCustomer(CustomerDTO customerDTO) {
+        Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        CustomerDTO returnDto = customerMapper.customerToCustomerDto(savedCustomer);
+        returnDto.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
+
+        return returnDto;
     }
 }

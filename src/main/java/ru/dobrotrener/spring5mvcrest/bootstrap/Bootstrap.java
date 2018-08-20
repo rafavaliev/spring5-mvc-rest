@@ -27,6 +27,7 @@ public class Bootstrap implements CommandLineRunner {
 
     /**
      * CommandLineRunner - Spring boot specific interface
+     *
      * @param args
      * @throws Exception
      */
@@ -37,13 +38,13 @@ public class Bootstrap implements CommandLineRunner {
     }
 
     private void createCustomers() {
-        Customer customer1 = new Customer(1L, "Michael",  "Lachappele");
-        Customer customer2 = new Customer(2L, "David",  "Winter");
-        Customer customer3 = new Customer(3L, "Anne",  "Hine");
-        Customer customer4 = new Customer(4L, "Alice",  "Eastman");
-        Customer customer5 = new Customer(5L, "Freddy",  "Meyers");
-        Customer customer6 = new Customer(6L, "Albert",  "Einstein");
-        Customer customer7 = new Customer(7L, "Joe",  "Buck");
+        Customer customer1 = new Customer("Michael", "Lachappele");
+        Customer customer2 = new Customer("David", "Winter");
+        Customer customer3 = new Customer("Anne", "Hine");
+        Customer customer4 = new Customer("Alice", "Eastman");
+        Customer customer5 = new Customer("Freddy", "Meyers");
+        Customer customer6 = new Customer("Albert", "Einstein");
+        Customer customer7 = new Customer("Joe", "Buck");
         customerRepository.saveAll(Arrays.asList(
                 customer1,
                 customer2,

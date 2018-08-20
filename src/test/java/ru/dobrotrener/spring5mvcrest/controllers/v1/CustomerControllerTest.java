@@ -18,11 +18,15 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.dobrotrener.spring5mvcrest.controllers.v1.AbstractRestControllerTest.asJsonString;
 
 @Slf4j
 public class CustomerControllerTest {
@@ -32,6 +36,7 @@ public class CustomerControllerTest {
     public static final Long ID_3 = 3L;
     public static final String FIRST_NAME = "FirstName";
     public static final String LAST_NAME = "LastName";
+    public static final String API_V1_CUSTOMERS = "/api/v1/customers/";
 
     private MockMvc mockMvc;
 
@@ -52,18 +57,18 @@ public class CustomerControllerTest {
         //given
         CustomerDTO customer1 = new CustomerDTO();
         customer1.setId(ID_1);
-        customer1.setFirstname(FIRST_NAME + ID_1);
-        customer1.setLastname(LAST_NAME + ID_1);
+        customer1.setFirstName(FIRST_NAME + ID_1);
+        customer1.setLastName(LAST_NAME + ID_1);
 
         CustomerDTO customer2 = new CustomerDTO();
         customer2.setId(ID_2);
-        customer2.setFirstname(FIRST_NAME + ID_1);
-        customer2.setLastname(LAST_NAME + ID_1);
+        customer2.setFirstName(FIRST_NAME + ID_1);
+        customer2.setLastName(LAST_NAME + ID_1);
 
         CustomerDTO customer3 = new CustomerDTO();
         customer3.setId(ID_3);
-        customer3.setFirstname(FIRST_NAME + ID_1);
-        customer3.setLastname(LAST_NAME + ID_1);
+        customer3.setFirstName(FIRST_NAME + ID_1);
+        customer3.setLastName(LAST_NAME + ID_1);
 
         when(customerService.getAllCustomers()).thenReturn(
                 Arrays.asList(customer1, customer2, customer3));
@@ -83,17 +88,42 @@ public class CustomerControllerTest {
         //given
         CustomerDTO customer = new CustomerDTO();
         customer.setId(ID_1);
-        customer.setFirstname(FIRST_NAME);
-        customer.setLastname(LAST_NAME);
+        customer.setFirstName(FIRST_NAME);
+        customer.setLastName(LAST_NAME);
 
         when(customerService.getCustomerByFirstName(anyString())).thenReturn(customer);
 
         //when
         mockMvc.perform(
-                get("/api/v1/customers/"+FIRST_NAME)
+                get(API_V1_CUSTOMERS + FIRST_NAME)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstname", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
                 .andDo(result -> log.info(result.getResponse().getContentAsString()));
+    }
+
+    @Test
+    public void createCustomerTest() throws Exception {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(FIRST_NAME);
+        customerDTO.setLastName(LAST_NAME);
+
+        CustomerDTO returnDto = new CustomerDTO();
+        returnDto.setFirstName(customerDTO.getFirstName());
+        returnDto.setLastName(customerDTO.getLastName());
+        returnDto.setCustomerUrl(API_V1_CUSTOMERS + "1");
+
+        when(customerService.createCustomer(any(CustomerDTO.class))).thenReturn(returnDto);
+
+        //when
+        mockMvc.perform(put(API_V1_CUSTOMERS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customerDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.customerUrl", equalTo(API_V1_CUSTOMERS+"1")))
+                .andDo(result -> log.info(result.getResponse().getContentAsString()));
+
     }
 }

@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerDTO;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerListDTO;
@@ -29,6 +32,11 @@ public class CustomerController {
     public ResponseEntity<CustomerDTO> getCustomerByFirstName(@PathVariable String name) {
         CustomerDTO customerDTO = customerService.getCustomerByFirstName(name);
         return new ResponseEntity<>(customerDTO, HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO) {
+        return new ResponseEntity<>(customerService.createCustomer(customerDTO), HttpStatus.CREATED);
     }
 
 }

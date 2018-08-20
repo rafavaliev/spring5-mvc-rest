@@ -11,7 +11,6 @@ import javax.persistence.Id;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
 
@@ -19,6 +18,15 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
+    private String customerUrl;
+
+    public Customer() {
+
+    }
+    public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +33,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void getAllCustomers() {
+    public void getAllCustomersTest() {
         //given
         Customer customer1 = new Customer();
         Customer customer2 = new Customer();
@@ -51,34 +52,58 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void getCustomerByFirstName() {
+    public void getCustomerByFirstNameTest() {
         //given
         Customer customer = new Customer();
-        customer.setFirstname(NAME);
+        customer.setFirstName(NAME);
 
-        when(customerRepository.findByFirstname(anyString())).thenReturn(customer);
+        when(customerRepository.findByFirstName(anyString())).thenReturn(customer);
         //when
         CustomerDTO customerDTO = customerService.getCustomerByFirstName(NAME);
 
         //then
         log.info(customerDTO.toString());
         assertNotNull(customerDTO);
-        assertEquals(customer.getFirstname(), customerDTO.getFirstname());
+        assertEquals(customer.getFirstName(), customerDTO.getFirstName());
     }
 
     @Test
-    public void getCustomerByLastName() {
+    public void getCustomerByLastNameTest() {
         //given
         Customer customer = new Customer();
-        customer.setFirstname(NAME);
+        customer.setFirstName(NAME);
 
-        when(customerRepository.findByLastname(anyString())).thenReturn(customer);
+        when(customerRepository.findByLastName(anyString())).thenReturn(customer);
         //when
         CustomerDTO customerDTO = customerService.getCustomerByLastName(NAME);
 
         //then
         log.info(customerDTO.toString());
         assertNotNull(customerDTO);
-        assertEquals(customer.getLastname(), customerDTO.getLastname());
+        assertEquals(customer.getLastName(), customerDTO.getLastName());
     }
+
+    @Test
+    public void createCustomerTest() throws Exception {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(NAME);
+        customerDTO.setLastName(NAME);
+
+        Customer savedCustomer = new Customer();
+        savedCustomer.setId(1L);
+        savedCustomer.setFirstName(NAME);
+        savedCustomer.setLastName(NAME);
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //when
+        CustomerDTO savedDto = customerService.createCustomer(customerDTO);
+
+        //then
+        assertNotNull(savedDto);
+        assertEquals(customerDTO.getFirstName(), savedDto.getFirstName());
+        assertEquals("/api/v1/customers/1", savedDto.getCustomerUrl());
+
+    };
 }
