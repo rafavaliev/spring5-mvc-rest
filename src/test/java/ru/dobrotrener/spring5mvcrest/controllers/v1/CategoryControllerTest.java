@@ -64,7 +64,7 @@ public class CategoryControllerTest {
 
         //when
         mockMvc.perform(
-                get("/api/v1/categories")
+                get(CategoryController.BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categories", hasSize(2)))
@@ -82,7 +82,7 @@ public class CategoryControllerTest {
 
         //when
         mockMvc.perform(
-                get("/api/v1/categories/"+FRUITS)
+                get(CategoryController.BASE_URL + FRUITS)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(FRUITS)))

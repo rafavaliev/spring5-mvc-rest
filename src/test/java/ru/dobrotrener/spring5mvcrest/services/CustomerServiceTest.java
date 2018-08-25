@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerDTO;
+import ru.dobrotrener.spring5mvcrest.controllers.v1.CustomerController;
 import ru.dobrotrener.spring5mvcrest.domain.Customer;
 import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
 
@@ -107,7 +108,7 @@ public class CustomerServiceTest {
         //then
         assertNotNull(savedDto);
         assertEquals(customerDTO.getFirstName(), savedDto.getFirstName());
-        assertEquals("/api/v1/customers/1", savedDto.getCustomerUrl());
+        assertEquals(CustomerController.BASE_URL + "1", savedDto.getCustomerUrl());
 
     }
 
@@ -132,7 +133,7 @@ public class CustomerServiceTest {
         //then
         assertNotNull(savedDto);
         assertEquals(customerDTO.getFirstName(), savedDto.getFirstName());
-        assertEquals("/api/v1/customers/1", savedDto.getCustomerUrl());
+        assertEquals(CustomerController.BASE_URL + "1", savedDto.getCustomerUrl());
         assertEquals(customerDTO.getId(), savedDto.getId());
     }
 

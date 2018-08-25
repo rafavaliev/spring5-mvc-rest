@@ -16,8 +16,10 @@ import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerListDTO;
 import ru.dobrotrener.spring5mvcrest.services.CustomerService;
 
 @Controller
-@RequestMapping(value = {"/api/v1/customers/", "/api/v1/customers"})
+@RequestMapping(value = {CustomerController.BASE_URL, CustomerController.BASE_URL2})
 public class CustomerController {
+    public static final String BASE_URL = "/api/v1/customers/";
+    public static final String BASE_URL2 = "/api/v1/customers";
     private CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {

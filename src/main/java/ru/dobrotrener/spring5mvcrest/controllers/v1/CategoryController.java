@@ -12,9 +12,11 @@ import ru.dobrotrener.spring5mvcrest.api.v1.model.CategoryListDTO;
 import ru.dobrotrener.spring5mvcrest.services.CategoryService;
 
 @Controller
-@RequestMapping(value = {"/api/v1/categories/","/api/v1/categories"})
+@RequestMapping(value = {CategoryController.BASE_URL, CategoryController.BASE_URL2})
 public class CategoryController {
 
+    public static final String BASE_URL = "/api/v1/categories/";
+    public static final String BASE_URL2 = "/api/v1/categories";
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
