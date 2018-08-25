@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,12 +34,13 @@ import static ru.dobrotrener.spring5mvcrest.controllers.v1.AbstractRestControlle
 @Slf4j
 public class CustomerControllerTest {
 
-    public static final Long ID_1 = 1L;
-    public static final Long ID_2 = 2L;
-    public static final Long ID_3 = 3L;
-    public static final String FIRST_NAME = "FirstName";
-    public static final String LAST_NAME = "LastName";
-    public static final String API_V1_CUSTOMERS = "/api/v1/customers/";
+    private static final Long ID_1 = 1L;
+    private static final Long ID_2 = 2L;
+    private static final Long ID_3 = 3L;
+    private static final String FIRST_NAME = "FirstName";
+    private static final String LAST_NAME = "LastName";
+    private static final String UPDATED_NAME = "UpdatedName";
+    private static final String API_V1_CUSTOMERS = "/api/v1/customers/";
 
     private MockMvc mockMvc;
 
@@ -131,7 +133,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void saveCustomerByDTO() throws Exception {
+    public void updateCustomerTest() throws Exception {
         //given
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName(FIRST_NAME);
@@ -151,7 +153,36 @@ public class CustomerControllerTest {
         mockMvc.perform(put(API_V1_CUSTOMERS + "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.customerUrl", equalTo(API_V1_CUSTOMERS + "1")))
+                .andDo(result -> log.info(result.getResponse().getContentAsString()));
+
+    }
+
+    @Test
+    public void patchCustomerTest() throws Exception {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(FIRST_NAME);
+        customerDTO.setLastName(LAST_NAME);
+        customerDTO.setId(ID_1);
+
+        CustomerDTO returnDto = new CustomerDTO();
+        returnDto.setFirstName(customerDTO.getFirstName());
+        returnDto.setLastName(UPDATED_NAME);
+        returnDto.setCustomerUrl(API_V1_CUSTOMERS + "1");
+        returnDto.setId(ID_1);
+
+        when(customerService.patchCustomer(anyLong(), any(CustomerDTO.class)))
+                .thenReturn(returnDto);
+
+        //when
+        mockMvc.perform(patch(API_V1_CUSTOMERS + "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customerDTO)))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.customerUrl", equalTo(API_V1_CUSTOMERS + "1")))

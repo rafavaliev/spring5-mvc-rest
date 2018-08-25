@@ -8,4 +8,8 @@ public class CustomerDTO {
     private String firstName;
     private String lastName;
     private String customerUrl;
+
+    public String getCustomerUrl() {
+        return "/api/v1/customers/" + id;
+    }
 }
