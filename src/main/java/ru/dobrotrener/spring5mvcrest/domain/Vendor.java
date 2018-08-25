@@ -28,4 +28,9 @@ public class Vendor {
     public Vendor(String name) {
         this.name = name;
     }
+
+    public Vendor(Long id, String name) {
+        this.name = name;
+        this.id = id;
+    }
 }

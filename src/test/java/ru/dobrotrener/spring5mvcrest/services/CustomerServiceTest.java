@@ -128,7 +128,7 @@ public class CustomerServiceTest {
         when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
 
         //when
-        CustomerDTO savedDto = customerService.createCustomer(customerDTO);
+        CustomerDTO savedDto = customerService.saveCustomerByDTO(1L, customerDTO);
 
         //then
         assertNotNull(savedDto);
