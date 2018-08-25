@@ -3,14 +3,12 @@ package ru.dobrotrener.spring5mvcrest.services;
 import org.springframework.stereotype.Service;
 import ru.dobrotrener.spring5mvcrest.api.v1.mapper.CustomerMapper;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerDTO;
-import ru.dobrotrener.spring5mvcrest.controllers.v1.CategoryController;
 import ru.dobrotrener.spring5mvcrest.controllers.v1.CustomerController;
 import ru.dobrotrener.spring5mvcrest.domain.Customer;
 import ru.dobrotrener.spring5mvcrest.exceptions.ResourceNotFoundException;
 import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
