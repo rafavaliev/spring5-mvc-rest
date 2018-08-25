@@ -157,7 +157,7 @@ public class CustomerServiceTest {
     public void deleteCustomberTest() throws Exception {
         //given
         Long id = 1L;
-
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(new Customer()));
         //when
         customerService.deleteCustomerById(id);
 
