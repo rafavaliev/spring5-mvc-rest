@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -186,6 +187,14 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
                 .andExpect(jsonPath("$.id", equalTo(1)))
                 .andExpect(jsonPath("$.customerUrl", equalTo(API_V1_CUSTOMERS + "1")))
+                .andDo(result -> log.info(result.getResponse().getContentAsString()));
+
+    }
+
+    @Test
+    public void deleteCustomerTest() throws Exception {
+        mockMvc.perform(delete(API_V1_CUSTOMERS + "1"))
+                .andExpect(status().isOk())
                 .andDo(result -> log.info(result.getResponse().getContentAsString()));
 
     }

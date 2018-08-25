@@ -17,6 +17,8 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -148,5 +150,18 @@ public class CustomerServiceTest {
         //then
         assertNotNull(customerDTO);
         assertEquals(customer.getId(), customerDTO.getId());
+    }
+
+    @Test
+    public void deleteCustomberTest() throws Exception {
+        //given
+        Long id = 1L;
+
+        //when
+        customerService.deleteCustomerById(id);
+
+        //then
+        verify(customerRepository, times(1)).deleteById(anyLong());
+
     }
 }
