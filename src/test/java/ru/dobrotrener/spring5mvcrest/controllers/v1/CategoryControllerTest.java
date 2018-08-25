@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CategoryDTO;
+import ru.dobrotrener.spring5mvcrest.controllers.RestResponseEntityExceptionHandler;
+import ru.dobrotrener.spring5mvcrest.exceptions.ResourceNotFoundException;
 import ru.dobrotrener.spring5mvcrest.services.CategoryService;
 
 import java.util.Arrays;
@@ -44,7 +46,10 @@ public class CategoryControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(categoryController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
+                .build();
     }
 
     @Test
@@ -86,6 +91,17 @@ public class CategoryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(FRUITS)))
+                .andDo(result -> log.info(result.getResponse().getContentAsString()));
+    }
+
+    @Test
+    public void testGetCategoryByNameNotFound() throws Exception {
+        when(categoryService.getCategoryByName(anyString())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(
+                get(CategoryController.BASE_URL + "/NotFoundCategory")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
                 .andDo(result -> log.info(result.getResponse().getContentAsString()));
     }
 

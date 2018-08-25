@@ -10,18 +10,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerDTO;
-import ru.dobrotrener.spring5mvcrest.domain.Customer;
+import ru.dobrotrener.spring5mvcrest.controllers.RestResponseEntityExceptionHandler;
+import ru.dobrotrener.spring5mvcrest.exceptions.ResourceNotFoundException;
 import ru.dobrotrener.spring5mvcrest.services.CustomerService;
 
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,7 +51,10 @@ public class CustomerControllerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(customerController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
+                .build();
     }
 
     @Test
@@ -196,6 +197,17 @@ public class CustomerControllerTest {
         mockMvc.perform(delete(CustomerController.BASE_URL + "1"))
                 .andExpect(status().isOk())
                 .andDo(result -> log.info(result.getResponse().getContentAsString()));
+    }
 
+    @Test
+    public void testGetCustomerByIdNotFound() throws Exception {
+        when(customerService.getCustomerById(anyLong()))
+                .thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(
+                get(CustomerController.BASE_URL + "/123")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(result -> log.info(result.getResponse().getContentAsString()));
     }
 }

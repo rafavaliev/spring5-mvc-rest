@@ -3,7 +3,10 @@ package ru.dobrotrener.spring5mvcrest.services;
 import org.springframework.stereotype.Service;
 import ru.dobrotrener.spring5mvcrest.api.v1.mapper.CustomerMapper;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerDTO;
+import ru.dobrotrener.spring5mvcrest.controllers.v1.CategoryController;
+import ru.dobrotrener.spring5mvcrest.controllers.v1.CustomerController;
 import ru.dobrotrener.spring5mvcrest.domain.Customer;
+import ru.dobrotrener.spring5mvcrest.exceptions.ResourceNotFoundException;
 import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
 
 import java.util.List;
@@ -59,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO saveCustomerByDTO(Long id, CustomerDTO customerDTO) {
         Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
         customer.setId(id);
-        customer.setCustomerUrl("/api/v1/customers/" + customer.getId().toString());
+        customer.setCustomerUrl(CustomerController.BASE_URL + customer.getId().toString());
         return saveAndReturnDTO(customer);
     }
 
@@ -67,15 +70,23 @@ public class CustomerServiceImpl implements CustomerService {
         Customer savedCustomer = customerRepository.save(customer);
 
         CustomerDTO returnDto = customerMapper.customerToCustomerDto(savedCustomer);
-        returnDto.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId().toString());
+        returnDto.setCustomerUrl(CustomerController.BASE_URL + savedCustomer.getId().toString());
         return returnDto;
     }
 
     @Override
     public CustomerDTO getCustomerById(Long id) {
-        Optional<Customer> customerOptional = customerRepository.findById(id);
-        Customer customer = customerOptional.orElseGet(Customer::new);
-        return customerMapper.customerToCustomerDto(customer);
+        return customerRepository.findById(id)
+                .map(customerMapper::customerToCustomerDto)
+                .map(customerDTO -> {
+                    customerDTO.setCustomerUrl(getCustomerUrl(id));
+                    return customerDTO;
+                })
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private String getCustomerUrl(Long id) {
+        return CustomerController.BASE_URL + id;
     }
 
     @Override
@@ -88,11 +99,12 @@ public class CustomerServiceImpl implements CustomerService {
                customer.setLastName(customerDTO.getLastName());
            }
            return customerMapper.customerToCustomerDto(customerRepository.save(customer));
-        }).orElseThrow(RuntimeException::new);
+        }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public void deleteCustomerById(Long id) {
+        getCustomerById(id);
         customerRepository.deleteById(id);
     }
 }
