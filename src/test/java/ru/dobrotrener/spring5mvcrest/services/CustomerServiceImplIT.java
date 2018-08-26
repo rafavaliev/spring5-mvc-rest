@@ -13,6 +13,7 @@ import ru.dobrotrener.spring5mvcrest.bootstrap.Bootstrap;
 import ru.dobrotrener.spring5mvcrest.domain.Customer;
 import ru.dobrotrener.spring5mvcrest.repositories.CategoryRepository;
 import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
+import ru.dobrotrener.spring5mvcrest.repositories.VendorRepository;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -31,6 +32,9 @@ public class CustomerServiceImplIT {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    VendorRepository vendorRepository;
+
     CustomerService customerService;
 
     @Before
@@ -39,7 +43,7 @@ public class CustomerServiceImplIT {
         log.info("Customers in DB: " + customerRepository.findAll().size());
 
         //setup data for testing
-        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository);
+        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository, vendorRepository);
         bootstrap.run();
 
         customerService = new CustomerServiceImpl(customerRepository);

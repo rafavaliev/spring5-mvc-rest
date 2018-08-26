@@ -5,8 +5,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import ru.dobrotrener.spring5mvcrest.domain.Category;
 import ru.dobrotrener.spring5mvcrest.domain.Customer;
+import ru.dobrotrener.spring5mvcrest.domain.Vendor;
 import ru.dobrotrener.spring5mvcrest.repositories.CategoryRepository;
 import ru.dobrotrener.spring5mvcrest.repositories.CustomerRepository;
+import ru.dobrotrener.spring5mvcrest.repositories.VendorRepository;
 
 import java.util.Arrays;
 
@@ -19,10 +21,14 @@ public class Bootstrap implements CommandLineRunner {
 
     private CustomerRepository customerRepository;
 
+    private VendorRepository vendorRepository;
+
     public Bootstrap(CategoryRepository categoryRepository,
-                     CustomerRepository customerRepository) {
+                     CustomerRepository customerRepository,
+                     VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     /**
@@ -35,6 +41,25 @@ public class Bootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         createCategories();
         createCustomers();
+        createVendors();
+    }
+
+    private void createVendors() {
+        Vendor vendor1 = new Vendor("Western Tasty Fruits Ltd.");
+        Vendor vendor2 = new Vendor("Exotic Fruits Company");
+        Vendor vendor3 = new Vendor("Home Fruits");
+        Vendor vendor4 = new Vendor("Fun Fresh Fruits Ltd.");
+        Vendor vendor5 = new Vendor("Nuts for Nuts Company");
+        Vendor vendor6 = new Vendor("JUMO");
+        vendorRepository.saveAll(Arrays.asList(
+                vendor1,
+                vendor2,
+                vendor3,
+                vendor4,
+                vendor5,
+                vendor6
+                ));
+        log.info("Vendors loaded on bootstrap: " + vendorRepository.count());
     }
 
     private void createCustomers() {
