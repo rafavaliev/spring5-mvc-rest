@@ -132,7 +132,7 @@ public class VendorControllerTest {
                         .content(asJsonString(vendorDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", equalTo(NAME)))
-                .andExpect(jsonPath("$.vendorUrl", equalTo(VendorController.BASE_URL + "1")))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "1")))
                 .andDo(result -> log.info(result.getResponse().getContentAsString()));
 
     }
@@ -155,7 +155,7 @@ public class VendorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(NAME)))
                 .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.vendorUrl", equalTo(VendorController.BASE_URL + "1")))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "1")))
                 .andDo(result -> log.info(result.getResponse().getContentAsString()));
     }
 
@@ -178,7 +178,7 @@ public class VendorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(UPDATED_NAME)))
                 .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.vendorUrl", equalTo(VendorController.BASE_URL + "1")))
+                .andExpect(jsonPath("$.vendor_url", equalTo(VendorController.BASE_URL + "1")))
                 .andDo(result -> log.info(result.getResponse().getContentAsString()));
     }
 

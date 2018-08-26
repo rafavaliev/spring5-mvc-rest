@@ -1,5 +1,7 @@
 package ru.dobrotrener.spring5mvcrest.controllers.v1;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,8 @@ import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerDTO;
 import ru.dobrotrener.spring5mvcrest.api.v1.model.CustomerListDTO;
 import ru.dobrotrener.spring5mvcrest.services.CustomerService;
 
+
+@Api(description = "Customer controller")
 @RestController
 @RequestMapping(value = {CustomerController.BASE_URL, CustomerController.BASE_URL2})
 public class CustomerController {
@@ -28,11 +32,11 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+    @ApiOperation(value = "Get list of all customers", notes = "Notes about API")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CustomerListDTO getAllCustomers() {
         return new CustomerListDTO(customerService.getAllCustomers());
-
     }
 
     @GetMapping("/{id}")
